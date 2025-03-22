@@ -1,9 +1,6 @@
 package AdvanceTaskManagement.AdvanceTaskManagement.Response;
 
-import AdvanceTaskManagement.AdvanceTaskManagement.Dto.AttachmentDTO;
-import AdvanceTaskManagement.AdvanceTaskManagement.Dto.CommentDTO;
-import AdvanceTaskManagement.AdvanceTaskManagement.Dto.ProjectDTO;
-import AdvanceTaskManagement.AdvanceTaskManagement.Dto.UserDTO;
+import AdvanceTaskManagement.AdvanceTaskManagement.Dto.*;
 import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Attachment;
 import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Comment;
 import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Task;
@@ -47,12 +44,38 @@ public class TaskResponse {
                         ? (task.getAssignees().stream().map(User::getId).collect(Collectors.toList()))
                         : List.of())
                 .projectId(task.getProject() != null ? task.getProject().getId() : null)
-                .comments(task.getComments() != null
-                        ? task.getComments().stream().map(CommentDTO::fromEntity).collect(Collectors.toList())
-                        : List.of())
                 .attachments(task.getAttachments() != null
-                        ? task.getAttachments().stream().map(AttachmentDTO::fromEntity).collect(Collectors.toList())
+                        ? task.getAttachments().stream()
+                        .filter(a -> !a.isDeleted())
+                        .map(TaskResponse::getAttachmentBuild)
+                        .collect(Collectors.toList())
                         : List.of())
+                .comments(task.getComments() != null
+                        ? task.getComments().stream()
+                        .filter(c -> !c.isDeleted())
+                        .map(TaskResponse::getCommentBuild)
+                        .collect(Collectors.toList())
+                        : List.of())
+                .build();
+    }
+
+    private static CommentDTO getCommentBuild(Comment comment) {
+        return CommentDTO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .user(UserDTO.fromEntity(comment.getUser()))
+                .task(TaskDTO.fromEntity(comment.getTask()))
+                .deleted(comment.isDeleted())
+                .build();
+    }
+
+    private static AttachmentDTO getAttachmentBuild(Attachment attachment) {
+        return AttachmentDTO.builder()
+                .id(attachment.getId())
+                .fileName(attachment.getFileName())
+                .filePath(attachment.getFilePath())
+                .deleted(attachment.isDeleted())
                 .build();
     }
 }

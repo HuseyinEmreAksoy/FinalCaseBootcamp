@@ -108,7 +108,7 @@ class AttachmentServiceTest {
     void getAttachmentsByTask_whenAttachmentsExist_shouldReturnFilteredList() {
         when(attachmentRepository.findByTaskId(1L)).thenReturn(List.of(defaultAttachment));
 
-        List<AttachmentDTO> responses = attachmentService.getAttachmentsByTask(1L);
+        List<AttachmentResponse> responses = attachmentService.getAttachmentsByTask(1L);
 
         assertEquals(1, responses.size());
         assertEquals("test.txt", responses.getFirst().getFileName());

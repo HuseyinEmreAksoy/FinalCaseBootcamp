@@ -66,10 +66,10 @@ public class AttachmentService {
         attachmentRepository.save(attachment);
     }
 
-    public List<AttachmentDTO> getAttachmentsByTask(Long taskId) {
+    public List<AttachmentResponse> getAttachmentsByTask(Long taskId) {
         return attachmentRepository.findByTaskId(taskId).stream()
                 .filter((attachment)-> !attachment.isDeleted())
-                .map(AttachmentDTO::fromEntity)
+                .map(AttachmentResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 }

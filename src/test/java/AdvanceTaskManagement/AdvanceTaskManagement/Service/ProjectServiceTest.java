@@ -221,7 +221,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    void shouldMapFromEntity() {
+    void shouldMapProjectFromEntity() {
         Project project = Project.builder()
                 .id(1L)
                 .title("Sample Project")
