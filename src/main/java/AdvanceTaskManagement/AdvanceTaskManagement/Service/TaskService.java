@@ -170,6 +170,10 @@ public class TaskService {
             throw new RuntimeException("Cannot update a task that is already COMPLETED");
         }
 
+        if (!currentState.requiresReason(newState) &&  !(reason == null || reason.isBlank())) {
+            throw new RuntimeException("Reason enter just changing state to Completed or Cancelled");
+        }
+
         if (!currentState.canTransitionTo(newState)) {
             throw new RuntimeException("Invalid state transition from " + currentState + " to " + newState);
         }

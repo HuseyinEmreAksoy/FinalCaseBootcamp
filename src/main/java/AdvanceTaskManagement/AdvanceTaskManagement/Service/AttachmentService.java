@@ -5,6 +5,7 @@ import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Attachment;
 import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Task;
 import AdvanceTaskManagement.AdvanceTaskManagement.Repository.AttachmentRepository;
 import AdvanceTaskManagement.AdvanceTaskManagement.Repository.TaskRepository;
+import AdvanceTaskManagement.AdvanceTaskManagement.Response.AttachmentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,7 +30,7 @@ public class AttachmentService {
     private final TaskRepository taskRepository;
 
 
-    public AttachmentDTO addAttachment(Long taskId, MultipartFile file) throws IOException {
+    public AttachmentResponse addAttachment(Long taskId, MultipartFile file) throws IOException {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + taskId));
         String uploadDir = "uploads";
@@ -52,7 +53,7 @@ public class AttachmentService {
                 .build();
 
         attachmentRepository.save(attachment);
-        return AttachmentDTO.fromEntity(attachment);
+        return AttachmentResponse.fromEntity(attachment);
     }
 
     public void deleteAttachment(Long attachmentId) {
