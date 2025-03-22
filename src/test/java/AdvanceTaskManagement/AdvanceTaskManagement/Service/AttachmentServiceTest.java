@@ -7,6 +7,7 @@ import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Attachment;
 import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Task;
 import AdvanceTaskManagement.AdvanceTaskManagement.Repository.AttachmentRepository;
 import AdvanceTaskManagement.AdvanceTaskManagement.Repository.TaskRepository;
+import AdvanceTaskManagement.AdvanceTaskManagement.Response.AttachmentResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,7 +82,7 @@ class AttachmentServiceTest {
             mockedStatic.when(() -> Files.copy(any(InputStream.class), any(Path.class), eq(StandardCopyOption.REPLACE_EXISTING)))
                     .thenReturn(12L);
 
-            AttachmentDTO response = attachmentService.addAttachment(1L, mockFile);
+            AttachmentResponse response = attachmentService.addAttachment(1L, mockFile);
 
             assertNotNull(response);
             assertEquals(1L, response.getId());

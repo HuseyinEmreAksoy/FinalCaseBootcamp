@@ -3,6 +3,7 @@ package AdvanceTaskManagement.AdvanceTaskManagement.Controller;
 import AdvanceTaskManagement.AdvanceTaskManagement.Dto.AttachmentDTO;
 import AdvanceTaskManagement.AdvanceTaskManagement.Dto.TaskDTO;
 import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Attachment;
+import AdvanceTaskManagement.AdvanceTaskManagement.Response.AttachmentResponse;
 import AdvanceTaskManagement.AdvanceTaskManagement.Service.AttachmentService;
 import AdvanceTaskManagement.AdvanceTaskManagement.Service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class AttachmentController {
         return ResponseEntity.ok(taskAttachmentService.getAttachmentsByTask(taskId));
     }
 
-    @PatchMapping(value = "/attachByTaskId/{taskId}/attachments", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AttachmentDTO> uploadAttachment(
+    @PostMapping(value = "/attachByTaskId/{taskId}/attachments", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AttachmentResponse> uploadAttachment(
             @PathVariable Long taskId,
             @RequestParam("file") MultipartFile file
     ) throws IOException {

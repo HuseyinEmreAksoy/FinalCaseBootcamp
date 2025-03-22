@@ -49,10 +49,10 @@ public class TaskResponse {
                 .projectId(task.getProject() != null ? task.getProject().getId() : null)
                 .comments(task.getComments() != null
                         ? task.getComments().stream().map(CommentDTO::fromEntity).collect(Collectors.toList())
-                        : null)
+                        : List.of())
                 .attachments(task.getAttachments() != null
                         ? task.getAttachments().stream().map(AttachmentDTO::fromEntity).collect(Collectors.toList())
-                        : null)
+                        : List.of())
                 .build();
     }
 }
