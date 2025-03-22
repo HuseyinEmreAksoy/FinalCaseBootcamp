@@ -7,6 +7,7 @@ import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Task;
 import AdvanceTaskManagement.AdvanceTaskManagement.Enum.TaskPriority;
 import AdvanceTaskManagement.AdvanceTaskManagement.Enum.TaskState;
 import AdvanceTaskManagement.AdvanceTaskManagement.Handler.GlobalExceptionHandler;
+import AdvanceTaskManagement.AdvanceTaskManagement.Response.AttachmentResponse;
 import AdvanceTaskManagement.AdvanceTaskManagement.Service.AttachmentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,7 @@ class AttachmentControllerTest {
     private ObjectMapper objectMapper;
 
     private AttachmentDTO attachmentDTO;
+    AttachmentResponse attachmentResponse;
     private TaskDTO taskDTO;
 
     @BeforeEach
@@ -74,23 +76,21 @@ class AttachmentControllerTest {
                 .filePath("/uploads/testfile.txt")
                 .deleted(false)
                 .build();
-
+        attachmentResponse = AttachmentResponse.fromEntity(attachment);
         attachmentDTO = AttachmentDTO.fromEntity(attachment);
         attachmentDTO.setTask(taskDTO);
     }
 
     @Test
     void getAttachmentsByTask_whenAttachmentsExist_shouldReturnOk() throws Exception {
-        when(taskAttachmentService.getAttachmentsByTask(1L)).thenReturn(Collections.singletonList(attachmentDTO));
+        when(taskAttachmentService.getAttachmentsByTask(1L)).thenReturn(Collections.singletonList(attachmentResponse));
 
         mockMvc.perform(get(API_BASE_PATH + "/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].fileName").value("testfile.txt"))
                 .andExpect(jsonPath("$[0].filePath").value("/uploads/testfile.txt"))
-                .andExpect(jsonPath("$[0].deleted").value(false))
-                .andExpect(jsonPath("$[0].task.id").value(1L))
-                .andExpect(jsonPath("$[0].task.title").value("Test Task"));
+                .andExpect(jsonPath("$[0].deleted").value(false));
     }
 
     @Test

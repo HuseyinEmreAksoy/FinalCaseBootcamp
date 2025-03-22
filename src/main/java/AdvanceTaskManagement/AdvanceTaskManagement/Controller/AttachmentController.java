@@ -26,7 +26,7 @@ public class AttachmentController {
     private final AttachmentService taskAttachmentService;
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<List<AttachmentDTO>> getAttachmentsByTask(@PathVariable Long taskId) {
+    public ResponseEntity<List<AttachmentResponse>> getAttachmentsByTask(@PathVariable Long taskId) {
         return ResponseEntity.ok(taskAttachmentService.getAttachmentsByTask(taskId));
     }
 

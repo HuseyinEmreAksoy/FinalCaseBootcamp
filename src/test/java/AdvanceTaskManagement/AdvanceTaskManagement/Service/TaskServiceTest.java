@@ -1,8 +1,7 @@
 package AdvanceTaskManagement.AdvanceTaskManagement.Service;
 
-import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Project;
-import AdvanceTaskManagement.AdvanceTaskManagement.Entity.Task;
-import AdvanceTaskManagement.AdvanceTaskManagement.Entity.User;
+import AdvanceTaskManagement.AdvanceTaskManagement.Dto.TaskDTO;
+import AdvanceTaskManagement.AdvanceTaskManagement.Entity.*;
 import AdvanceTaskManagement.AdvanceTaskManagement.Enum.TaskPriority;
 import AdvanceTaskManagement.AdvanceTaskManagement.Enum.TaskState;
 import AdvanceTaskManagement.AdvanceTaskManagement.Enum.UserRole;
@@ -172,7 +171,101 @@ class TaskServiceTest {
         verify(taskRepository, times(1)).findById(1L);
         verify(taskRepository, times(1)).save(Mockito.<Task>any());
     }
+    @Test
+    void shouldMapTaskResponseFromEntity() {
+        User user = User.builder().id(1L).name("Alice").build();
 
+        Attachment attachment = Attachment.builder()
+                .id(10L)
+                .fileName("file.txt")
+                .filePath("/uploads/file.txt")
+                .deleted(false)
+                .build();
+
+        Comment comment = Comment.builder()
+                .id(20L)
+                .content("Great work!")
+                .user(user)
+                .task(new Task())
+                .deleted(false)
+                .build();
+
+        Project project = Project.builder().id(999L).build();
+
+        Task task = Task.builder()
+                .id(100L)
+                .title("Test Task")
+                .acceptanceCriteria("Some criteria")
+                .state(TaskState.BACKLOG)
+                .priority(TaskPriority.CRITICAL)
+                .reason("Initial")
+                .assignees(List.of(user))
+                .attachments(List.of(attachment))
+                .comments(List.of(comment))
+                .project(project)
+                .build();
+
+        TaskResponse response = TaskResponse.fromEntity(task);
+
+        assertEquals(100L, response.getId());
+        assertEquals("Test Task", response.getTitle());
+        assertEquals(TaskState.BACKLOG, response.getState());
+        assertEquals(TaskPriority.CRITICAL, response.getPriority());
+        assertEquals("Initial", response.getReason());
+        assertEquals(List.of(1L), response.getAssignees());
+        assertEquals(1, response.getAttachments().size());
+        assertEquals(10L, response.getAttachments().get(0).getId());
+        assertEquals(1, response.getComments().size());
+        assertEquals(20L, response.getComments().get(0).getId());
+        assertEquals(999L, response.getProjectId());
+    }
+
+    @Test
+    void shouldMapTaskDTOFromEntity() {
+        User user = User.builder().id(1L).name("Alice").build();
+
+        Attachment attachment = Attachment.builder()
+                .id(10L)
+                .fileName("file.txt")
+                .filePath("/uploads/file.txt")
+                .deleted(false)
+                .build();
+
+        Comment comment = Comment.builder()
+                .id(20L)
+                .content("Great work!")
+                .user(user)
+                .task(new Task())
+                .deleted(false)
+                .build();
+
+        Project project = Project.builder().id(999L).build();
+
+        Task task = Task.builder()
+                .id(100L)
+                .title("Test Task")
+                .acceptanceCriteria("Some criteria")
+                .state(TaskState.BACKLOG)
+                .priority(TaskPriority.CRITICAL)
+                .reason("Initial")
+                .assignees(List.of(user))
+                .attachments(List.of(attachment))
+                .comments(List.of(comment))
+                .project(project)
+                .build();
+
+        TaskDTO response = TaskDTO.fromEntity(task);
+
+        assertEquals(100L, response.getId());
+        assertEquals("Test Task", response.getTitle());
+        assertEquals(TaskState.BACKLOG, response.getState());
+        assertEquals(TaskPriority.CRITICAL, response.getPriority());
+        assertEquals("Initial", response.getReason());
+        assertEquals(1, response.getAttachments().size());
+        assertEquals(10L, response.getAttachments().get(0).getId());
+        assertEquals(1, response.getComments().size());
+        assertEquals(20L, response.getComments().get(0).getId());
+    }
     @Test
     void updateTask_whenNotAuthorized_shouldThrowException() {
         TaskRequest request = TaskRequest.builder().title("New Title").build();
